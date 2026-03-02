@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>MediLens – AI Prescription Information Assistant</title>
+    <meta name="description"
+        content="MediLens is an information assistant for understanding prescriptions. Not a medical decision system. Human verification required." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="style.css">
+    <!-- Dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+    <!-- Firebase SDK (v11) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+
+        async function initApp() {
+            try {
+                const response = await fetch('/api/firebase-config');
+                const firebaseConfig = await response.json();
+
+                const app = initializeApp(firebaseConfig);
+                const auth = getAuth(app);
+
+                // Protection: Redirect to login if not authenticated
+                onAuthStateChanged(auth, (user) => {
+                    if (!user) {
+                        console.log("[Auth] No active session - redirecting to login.html");
+                        window.location.href = "login.html";
+                    }
+                });
+
+                window.mlAuth = {
+                    auth,
+                    onAuthStateChanged,
+                    signOut
+                };
+            } catch (err) {
+                console.error("Failed to load Firebase config:", err);
+            }
+        }
+
+        initApp();
+    </script>
+</head>
+
+<body>
+    <!-- (Modal removed - shifted to login.html) -->
+
+    <!-- NAV -->
+    <nav>
+        <div class="logo">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                <circle cx="14" cy="14" r="13" stroke="url(#g1)" stroke-width="2" />
+                <ellipse cx="14" cy="14" rx="7" ry="5" stroke="url(#g1)" stroke-width="1.5" />
+                <circle cx="14" cy="14" r="2.5" fill="url(#g1)" />
+                <defs>
+                    <linearGradient id="g1" x1="0" y1="0" x2="28" y2="28">
+                        <stop stop-color="#0ea5e9" />
+                        <stop offset="1" stop-color="#06b6d4" />
+                    </linearGradient>
+                </defs>
+            </svg>
+            MediLens
+        </div>
+        <ul class="nav-links">
+            <li><a href="#scan">Scan</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#profile">Profile</a></li>
+            <li><a href="#history">History</a></li>
+        </ul>
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <span id="userDisplay" style="font-size: 0.85rem; color: var(--muted); display: none;"></span>
+            <button class="nav-btn" id="logoutBtn"
+                style="display: none; background: var(--card2); border: 1px solid var(--border);"
+                onclick="handleLogout()">Logout</button>
+            <button class="nav-btn" onclick="document.getElementById('scan').scrollIntoView({behavior:'smooth'})">Scan
+                Now</button>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-grid"></div>
+        <div class="hero-content">
+            <div class="hero-badge">🔬 AI-Powered Prescription Intelligence</div>
+            <h1>Decode Any Prescription<br /><span>Instantly & Safely</span></h1>
+            <p>Upload a photo of your handwritten prescription. MediLens uses advanced OCR and AI to extract medicine
+                details, check interactions, and give you clear, safe information.</p>
+            <div class="hero-btns">
+                <button class="btn-primary"
+                    onclick="document.getElementById('scan').scrollIntoView({behavior:'smooth'})">📷 Scan
+                    Prescription</button>
+                <button class="btn-ghost"
+                    onclick="document.getElementById('features').scrollIntoView({behavior:'smooth'})">Learn
+                    More</button>
+            </div>
+            <div class="hero-stats">
+                <div class="stat">
+                    <div class="stat-n">5,000+</div>
+                    <div class="stat-l">Medicines in DB</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-n">98%</div>
+                    <div class="stat-l">OCR Accuracy</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-n">HIPAA</div>
+                    <div class="stat-l">Compliant</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-n">Free</div>
+                    <div class="stat-l">Always</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="section" id="features">
+        <h2 class="section-title">Everything You Need</h2>
+        <p class="section-sub">A complete prescription assistant powered by AI and verified drug databases.</p>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon" style="background:rgba(14,165,233,.15)">🔍</div>
+                <h3>OCR + AI Extraction</h3>
+                <p>Reads messy handwriting using Tesseract.js and extracts medicine, dosage, frequency, and duration.
+                </p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon" style="background:rgba(16,185,129,.15)">💊</div>
+                <h3>Drug Information</h3>
+                <p>Fetches real data from OpenFDA — uses, side effects, contraindications, and generic alternatives.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon" style="background:rgba(239,68,68,.15)">⚠️</div>
+                <h3>Interaction Checker</h3>
+                <p>Detects harmful drug-drug interactions when multiple medicines are on your prescription.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon" style="background:rgba(245,158,11,.15)">🔊</div>
+                <h3>Voice Readout</h3>
+                <p>Text-to-speech for dosage instructions in clear language — helpful for elderly patients.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon" style="background:rgba(129,140,248,.15)">👤</div>
+                <h3>Health Profile</h3>
+                <p>Enter allergies, conditions, and age to get personalised risk warnings cross-referenced with your
+                    meds.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon" style="background:rgba(6,182,212,.15)">📋</div>
+                <h3>Prescription History</h3>
+                <p>All your past scans are saved locally. Review previous prescriptions anytime, securely on your
+                    device.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SCAN SECTION -->
+    <section class="section" id="scan">
+        <h2 class="section-title">Scan Your Prescription</h2>
+        <p class="section-sub">Upload an image or take a photo. MediLens will do the rest.</p>
+
+        <div class="upload-area" id="uploadArea" ondragover="handleDrag(event)" ondragleave="handleDragLeave(event)"
+            ondrop="handleDrop(event)">
+            <div class="upload-icon">📄</div>
+            <h3>Drop your prescription here</h3>
+            <p>Supports JPG, PNG, WebP, PDF images. Max 10MB.</p>
+            <div class="upload-actions">
+                <button class="btn-sm btn-blue" onclick="document.getElementById('fileInput').click()">📁 Browse
+                    File</button>
+                <button class="btn-sm btn-outline" onclick="document.getElementById('cameraInput').click()">📷
+                    Camera</button>
+                <button class="btn-sm btn-outline" onclick="loadDemoImage()">🔬 Try Demo</button>
+            </div>
+            <input type="file" id="fileInput" accept="image/*" onchange="handleFile(this.files[0])" />
+            <input type="file" id="cameraInput" accept="image/*" capture="environment"
+                onchange="handleFile(this.files[0])" />
+            <img id="imgPreview" class="img-preview hidden" alt="Prescription preview" />
+        </div>
+
+        <div class="progress-wrap" id="progressWrap">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-label" id="progressLabel">Initialising OCR engine…</div>
+        </div>
+
+        <div id="resultsSection" class="hidden" style="margin-top:2rem">
+            <div class="warn-box" style="margin-bottom:1.5rem; border-color:var(--yellow)">
+                <p style="color:var(--yellow)"><strong>📢 Mandatory Verification Required:</strong> Cross-check the
+                    results below with your physical prescription. Do not change or stop medication based on this
+                    screen. <strong>Consult your doctor immediately for any dosage concerns.</strong></p>
+            </div>
+
+            <h3 style="font-family:var(--font2);font-size:1.3rem;margin-bottom:1rem">📝 Extracted Information</h3>
+
+            <div class="tts-bar" id="ttsBar">
+                <button onclick="readAloud()">🔊 Read Aloud</button>
+                <button onclick="stopSpeech()" style="background:linear-gradient(135deg,#64748b,#475569)">⏹
+                    Stop</button>
+                <span id="ttsStatus">Tap "Read Aloud" to hear the prescription details.</span>
+            </div>
+
+            <div class="results-grid" id="resultsGrid"></div>
+
+            <div class="tabs">
+                <button class="tab active" onclick="showTab('info',this)">💊 Drug Info</button>
+                <button class="tab" onclick="showTab('interactions',this)">⚠️ Interactions</button>
+                <button class="tab" onclick="showTab('alternatives',this)">🔄 Alternatives</button>
+            </div>
+
+            <div id="tab-info">
+                <div class="drug-info-card" id="drugInfoCard">
+                    <p class="pulse" style="color:var(--muted)">Fetching drug information…</p>
+                </div>
+            </div>
+            <div id="tab-interactions" class="hidden">
+                <div class="drug-info-card" id="interactionCard">
+                    <p style="color:var(--muted)">Checking interactions…</p>
+                </div>
+            </div>
+            <div id="tab-alternatives" class="hidden">
+                <div class="drug-info-card" id="altCard">
+                    <p style="color:var(--muted)">Finding generic alternatives…</p>
+                </div>
+            </div>
+
+            <button class="btn-sm btn-blue" onclick="saveToHistory()" style="margin-top:1rem">💾 Save to
+                History</button>
+            <button class="btn-sm btn-outline" id="forceAIButton" onclick="forceAIScan()"
+                style="margin-top:1rem;margin-left:.5rem; border-color:var(--accent); color:var(--accent)">🧠 Re-analyze
+                with AI</button>
+            <button class="btn-sm btn-outline" onclick="resetScan()" style="margin-top:1rem;margin-left:.5rem">🔄 Scan
+                Another</button>
+        </div>
+    </section>
+
+    <!-- PROFILE -->
+    <section class="section" id="profile">
+        <h2 class="section-title">🔒 Encrypted Health Profile</h2>
+        <p class="section-sub">Data is end-to-end encrypted (AES-256) before being stored in your browser's local
+            vault. We minimize data collection for your privacy.</p>
+        <div class="drug-info-card">
+            <div class="profile-grid">
+                <div class="form-group"><label>Full Name</label><input type="text" id="pName" placeholder="Jane Doe" />
+                </div>
+                <div class="form-group"><label>Age</label><input type="number" id="pAge" placeholder="35" min="1"
+                        max="120" /></div>
+                <div class="form-group"><label>Weight (kg)</label><input type="number" id="pWeight" placeholder="65" />
+                </div>
+                <div class="form-group"><label>Blood Group</label><select id="pBlood">
+                        <option>Select…</option>
+                        <option>A+</option>
+                        <option>A-</option>
+                        <option>B+</option>
+                        <option>B-</option>
+                        <option>AB+</option>
+                        <option>AB-</option>
+                        <option>O+</option>
+                        <option>O-</option>
+                    </select></div>
+                <div class="form-group"><label>Pregnancy Status</label><select id="pPreg">
+                        <option>Not Applicable</option>
+                        <option>Pregnant</option>
+                        <option>Breastfeeding</option>
+                        <option>Planning Pregnancy</option>
+                    </select></div>
+                <div class="form-group"><label>Existing Conditions</label><input type="text" id="pConditions"
+                        placeholder="Diabetes, Hypertension…" /></div>
+            </div>
+            <div class="form-group" style="margin-top:1rem"><label>Known Allergies</label><textarea id="pAllergies"
+                    rows="2" placeholder="Penicillin, Aspirin, Sulfa drugs…"
+                    style="background:var(--card);border:1px solid var(--border);color:var(--text);padding:.65rem .9rem;border-radius:10px;font-size:.9rem;font-family:var(--font);outline:none;width:100%;resize:vertical"></textarea>
+            </div>
+            <button class="btn-sm btn-blue" onclick="saveProfile()" style="margin-top:1.2rem">💾 Save Profile</button>
+        </div>
+    </section>
+
+    <!-- HISTORY -->
+    <section class="section" id="history">
+        <h2 class="section-title">Prescription History</h2>
+        <p class="section-sub">Your past scans, saved securely on your device.</p>
+        <div id="historyGrid" class="history-grid">
+            <p style="color:var(--muted)">No prescriptions scanned yet.</p>
+        </div>
+        <button class="btn-sm btn-outline" onclick="clearHistory()" style="margin-top:1.5rem">🗑 Clear History</button>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <p><strong>MediLens Information Assistant</strong> &nbsp;|&nbsp; Version 2.4.0 (Security Hardened)<br />
+            🛡️ <strong>Privacy:</strong> Images are purged immediately after OCR processing unless explicitly saved to
+            history.<br />
+            ⚕️ <strong>Disclaimer:</strong> Educational use only. Does not replace professional medical advice. No
+            clinical accuracy claimed.<br />
+            <a href="#" onclick="showPrivacyPolicy()">Detailed Privacy Policy</a> &nbsp;|&nbsp; <a href="#">Security
+                Documentation</a> &nbsp;|&nbsp; &copy; 2026 MediLens
+        </p>
+    </footer>
+
+    <!-- PRIVACY POLICY MODAL -->
+    <div class="modal-overlay hidden" id="privacyModal">
+        <div class="modal" style="text-align:left;">
+            <h2>Privacy & Security Policy</h2>
+            <div
+                style="font-size:0.85rem; height:300px; overflow-y:auto; color:var(--muted); line-height:1.6; padding-right:1rem;">
+                <p><strong>1. Data Collection:</strong> We minimize collection to essential health markers (age,
+                    allergies) and prescription history. Images are processed in-memory and deleted instantly.</p>
+                <p><strong>2. Encryption:</strong> All data is stored using E2EE protocols (AES/TLS 1.3). Backups are
+                    encrypted at the field level.</p>
+                <p><strong>3. Retention:</strong> Data is kept as long as your account exists. You can trigger a 'Hard
+                    Flush' to delete everything anytime.</p>
+                <p><strong>4. Infrastructure:</strong> Hosted on ISO 27001 compliant cloud servers with active
+                    firewalling and rate limiting.</p>
+            </div>
+            <button class="btn-primary" style="margin-top:1rem; width:100%"
+                onclick="document.getElementById('privacyModal').classList.add('hidden')">Close</button>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

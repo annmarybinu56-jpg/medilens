@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>MediLens – Login / Sign Up</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Outfit:wght@600;700&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="style.css">
+    <!-- Firebase SDK (v11) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+
+        async function initAuth() {
+            try {
+                const response = await fetch('/api/firebase-config');
+                const firebaseConfig = await response.json();
+
+                const app = initializeApp(firebaseConfig);
+                const auth = getAuth(app);
+
+                window.mlAuth = {
+                    auth,
+                    signInWithEmailAndPassword,
+                    createUserWithEmailAndPassword,
+                    onAuthStateChanged
+                };
+
+                // Trigger DOMContentLoaded logic for auth manually if it already fired
+                if (window.handleAuthReady) window.handleAuthReady();
+            } catch (err) {
+                console.error("Failed to load Firebase config for Login:", err);
+            }
+        }
+
+        initAuth();
+    </script>
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            background: radial-gradient(circle at center, var(--bg2), var(--bg));
+        }
+
+        .login-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            width: 100%;
+            max-width: 440px;
+            padding: 2.5rem;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .login-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
+            font-family: var(--font2);
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-card">
+        <div class="login-logo">
+            <svg width="32" height="32" viewBox="0 0 28 28" fill="none">
+                <circle cx="14" cy="14" r="13" stroke="url(#g1)" stroke-width="2" />
+                <ellipse cx="14" cy="14" rx="7" ry="5" stroke="url(#g1)" stroke-width="1.5" />
+                <circle cx="14" cy="14" r="2.5" fill="url(#g1)" />
+                <defs>
+                    <linearGradient id="g1" x1="0" y1="0" x2="28" y2="28">
+                        <stop stop-color="#0ea5e9" />
+                        <stop offset="1" stop-color="#06b6d4" />
+                    </linearGradient>
+                </defs>
+            </svg>
+            MediLens
+        </div>
+
+        <h2 id="authTitle" style="font-family: var(--font2); margin-bottom: 0.5rem;">Sign In</h2>
+        <p style="color: var(--muted); font-size: 0.9rem; margin-bottom: 2rem;">Welcome back! Please enter your details.
+        </p>
+
+        <div class="form-group" style="margin-bottom: 1.2rem;">
+            <label>Email Address</label>
+            <input type="email" id="authEmail" placeholder="name@example.com" style="width: 100%;" />
+        </div>
+        <div class="form-group" style="margin-bottom: 1.2rem;">
+            <label>Password</label>
+            <input type="password" id="authPass" placeholder="••••••••" style="width: 100%;" />
+        </div>
+
+        <p id="authSwitchNote"
+            style="font-size: 0.85rem; color: var(--accent); cursor: pointer; text-decoration: underline; margin-bottom: 1.5rem;"
+            onclick="toggleAuthMode()">Don't have an account? Sign Up instead.</p>
+
+        <button class="btn-primary" id="agreeBtn" style="width: 100%; margin-bottom: 1.5rem;">Sign In</button>
+
+        <div
+            style="border-top: 1px solid var(--border); padding-top: 1.5rem; font-size: 0.75rem; color: var(--muted); line-height: 1.5;">
+            <p>ℹ️ By signing in, you agree to our <strong>Medical Disclaimer</strong>. This app is for educational
+                purposes only and requires pharmacist verification.</p>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script src="auth.js"></script>
+</body>
+
+</html>
