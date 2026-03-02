@@ -6,11 +6,10 @@
 
 ## Basic Details
 
-### Team Name: [Name]
-
+### Team Name: [A cube ]
 ### Team Members
-- Member 1: [Name] - [College]
-- Member 2: [Name] - [College]
+- Member 1: [Ann Mary Binu] - [Mar Baselios Christian college of engineering and technology]
+- Member 2: [Aan Mariyam George] - [Mar Baselios Christian college of engineering and technology]
 
 ### Hosted Project Link
 [mention your project hosted link here]
@@ -46,10 +45,10 @@
 ## Features
 
 List the key features of your project:
-- Feature 1: [Description]
-- Feature 2: [Description]
-- Feature 3: [Description]
-- Feature 4: [Description]
+- Feature 1: [priscription scanner]
+- Feature 2: [reminder system]
+- Feature 3: [medical information module]
+- Feature 4: [drug interaction checker]
 
 ---
 
