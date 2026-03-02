@@ -2,8 +2,7 @@
   <img src="./img.png" alt="Project Banner" width="100%">
 </p>
 
-# [Project Name] 🎯
-
+medilens
 ## Basic Details
 
 ### Team Name: [A cube ]
@@ -81,15 +80,15 @@ List the key features of your project:
 ### For Software:
 
 #### Screenshots (Add at least 3)
-
+[
 ![Screenshot1](Add screenshot 1 here with proper name)
 *Add caption explaining what this shows*
-
-![Screenshot2](Add screenshot 2 here with proper name)
-*Add caption explaining what this shows*
-
+](https://drive.google.com/file/d/1t1Y1KwO_L2qsCQkY_wFCnRMgQNATmU6x/view?usp=sharing)
+[![Screenshot2](Add screenshot 2 here with proper name)
+*Add caption explaining what this shows*](https://drive.google.com/file/d/1t1Y1KwO_L2qsCQkY_wFCnRMgQNATmU6x/view?usp=sharing)
+[
 ![Screenshot3](Add screenshot 3 here with proper name)
-*Add caption explaining what this shows*
+*Add caption explaining what this shows*](https://drive.google.com/file/d/1t1Y1KwO_L2qsCQkY_wFCnRMgQNATmU6x/view?usp=sharing)
 
 #### Diagrams
 
@@ -360,13 +359,13 @@ python script.py -v --format json data.json
 ## Project Demo
 
 ### Video
-[Add your demo video link here - YouTube, Google Drive, etc.]
-
+[[Add your demo video link here - YouTube, Google Drive, etc.]
+](https://drive.google.com/file/d/1t1Y1KwO_L2qsCQkY_wFCnRMgQNATmU6x/view?usp=sharing)
 *Explain what the video demonstrates - key features, user flow, technical highlights*
 
 ### Additional Demos
-[Add any extra demo materials/links - Live site, APK download, online demo, etc.]
-
+[[Add any[ ](https://drive.google.com/file/d/1t1Y1KwO_L2qsCQkY_wFCnRMgQNATmU6x/view?usp=sharing)extra demo materials/links - Live site, APK download, online demo, etc.]
+](https://drive.google.com/file/d/1t1Y1KwO_L2qsCQkY_wFCnRMgQNATmU6x/view?usp=sharing)
 ---
 
 ## AI Tools Used (Optional - For Transparency Bonus)
